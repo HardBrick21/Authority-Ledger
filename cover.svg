@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="50%" style="stop-color:#16213e"/>
+      <stop offset="100%" style="stop-color:#0f3460"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Grid pattern -->
+  <g opacity="0.1">
+    <line x1="0" y1="100" x2="1200" y2="100" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="200" x2="1200" y2="200" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="300" x2="1200" y2="300" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="400" x2="1200" y2="400" stroke="white" stroke-width="1"/>
+    <line x1="0" y1="500" x2="1200" y2="500" stroke="white" stroke-width="1"/>
+    <line x1="200" y1="0" x2="200" y2="630" stroke="white" stroke-width="1"/>
+    <line x1="400" y1="0" x2="400" y2="630" stroke="white" stroke-width="1"/>
+    <line x1="600" y1="0" x2="600" y2="630" stroke="white" stroke-width="1"/>
+    <line x1="800" y1="0" x2="800" y2="630" stroke="white" stroke-width="1"/>
+    <line x1="1000" y1="0" x2="1000" y2="630" stroke="white" stroke-width="1"/>
+  </g>
+  
+  <!-- Brick emoji -->
+  <text x="100" y="180" font-size="120">🧱</text>
+  
+  <!-- Title -->
+  <text x="100" y="280" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="white">Authority Ledger</text>
+  
+  <!-- Tagline -->
+  <text x="100" y="340" font-family="Arial, sans-serif" font-size="28" fill="#9ca3af">Permission State Machine for AI Agents</text>
+  
+  <!-- Authority levels visualization -->
+  <g transform="translate(100, 400)">
+    <!-- EXECUTE -->
+    <rect x="0" y="0" width="180" height="60" rx="8" fill="#10b981"/>
+    <text x="90" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">EXECUTE</text>
+    
+    <!-- Arrow -->
+    <path d="M190 30 L220 30" stroke="#6b7280" stroke-width="3" marker-end="url(#arrow)"/>
+    
+    <!-- SUGGEST -->
+    <rect x="240" y="0" width="180" height="60" rx="8" fill="#f59e0b"/>
+    <text x="330" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">SUGGEST</text>
+    
+    <!-- Arrow -->
+    <path d="M430 30 L460 30" stroke="#6b7280" stroke-width="3"/>
+    
+    <!-- OBSERVE -->
+    <rect x="480" y="0" width="180" height="60" rx="8" fill="#3b82f6"/>
+    <text x="570" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">OBSERVE</text>
+    
+    <!-- Arrow -->
+    <path d="M670 30 L700 30" stroke="#6b7280" stroke-width="3"/>
+    
+    <!-- REVOKED -->
+    <rect x="720" y="0" width="180" height="60" rx="8" fill="#ef4444"/>
+    <text x="810" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">REVOKED</text>
+  </g>
+  
+  <!-- Event types -->
+  <g transform="translate(100, 520)">
+    <text font-family="Arial, sans-serif" font-size="18" fill="#9ca3af">
+      <tspan fill="#10b981">DECAY</tspan>
+      <tspan fill="#6b7280"> • </tspan>
+      <tspan fill="#ef4444">REVOKE</tspan>
+      <tspan fill="#6b7280"> • </tspan>
+      <tspan fill="#3b82f6">RECOVER</tspan>
+    </text>
+  </g>
+  
+  <!-- Contract address -->
+  <text x="1100" y="600" font-family="monospace" font-size="14" fill="#6b7280" text-anchor="end">0xe7da77beBf85a0b3BEDf46c056e7Fb4f77AC2aD8</text>
+  
+  <!-- Base Sepolia badge -->
+  <rect x="1000" y="50" width="150" height="40" rx="20" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)"/>
+  <text x="1075" y="76" font-family="Arial, sans-serif" font-size="16" fill="white" text-anchor="middle">Base Sepolia</text>
+</svg>
