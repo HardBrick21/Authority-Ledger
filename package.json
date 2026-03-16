@@ -1,0 +1,28 @@
+{
+  "name": "authority-ledger",
+  "version": "1.0.0",
+  "description": "A permission state machine for AI agents with full audit trail on-chain",
+  "scripts": {
+    "compile": "forge build",
+    "test": "forge test -vvv",
+    "test:gas": "forge test --gas-report",
+    "deploy:base": "forge script script/Deploy.s.sol --rpc-url $BASE_RPC_URL --broadcast --verify",
+    "deploy:base-testnet": "forge script script/Deploy.s.sol --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast",
+    "clean": "forge clean",
+    "fmt": "forge fmt",
+    "lint": "forge fmt --check"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "ai-agents",
+    "erc-8004",
+    "authority",
+    "permissions"
+  ],
+  "author": "Brick",
+  "license": "MIT",
+  "devDependencies": {
+    "forge-std": "github:foundry-rs/forge-std"
+  }
+}

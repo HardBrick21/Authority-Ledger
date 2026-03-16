@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authority Ledger - Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .level-execute { background: linear-gradient(135deg, #10b981, #059669); }
+        .level-suggest { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .level-observe { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .level-revoked { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-2">🧱 Authority Ledger</h1>
+            <p class="text-gray-400">Permission State Machine for AI Agents</p>
+            <div class="mt-4 flex justify-center gap-4">
+                <span class="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400">Base Sepolia</span>
+            </div>
+        </header>
+
+        <div id="connectionStatus" class="card rounded-xl p-4 mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div id="statusDot" class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <span id="statusText" class="text-gray-300">Not Connected</span>
+                </div>
+                <button id="connectBtn" onclick="connectWallet()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">Connect Wallet</button>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <div class="card rounded-xl p-6">
+                <h2 class="text-xl font-semibold mb-4">📝 Register Agent</h2>
+                <div class="space-y-4">
+                    <input type="text" id="agentAddress" placeholder="Agent Address (0x...)" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                    <button onclick="registerAgent()" class="w-full py-2 bg-green-600 hover:bg-green-700 rounded-lg">Register</button>
+                </div>
+            </div>
+
+            <div class="card rounded-xl p-6">
+                <h2 class="text-xl font-semibold mb-4">🔐 Grant Authority</h2>
+                <div class="space-y-4">
+                    <input type="text" id="grantAgentAddress" placeholder="Agent Address" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                    <select id="authorityLevel" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                        <option value="1">OBSERVE</option>
+                        <option value="2">SUGGEST</option>
+                        <option value="3">EXECUTE</option>
+                    </select>
+                    <input type="number" id="duration" value="86400" placeholder="Duration (seconds)" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                    <button onclick="grantAuthority()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg">Grant</button>
+                </div>
+            </div>
+
+            <div class="card rounded-xl p-6">
+                <h2 class="text-xl font-semibold mb-4">🔍 Check Authority</h2>
+                <div class="space-y-4">
+                    <input type="text" id="checkAgentAddress" placeholder="Agent Address" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                    <button onclick="checkAuthority()" class="w-full py-2 bg-purple-600 hover:bg-purple-700 rounded-lg">Check</button>
+                    <div id="authorityResult" class="hidden bg-white/5 rounded-lg p-4"></div>
+                </div>
+            </div>
+
+            <div class="card rounded-xl p-6">
+                <h2 class="text-xl font-semibold mb-4">⚠️ Revoke Authority</h2>
+                <div class="space-y-4">
+                    <input type="text" id="revokeAgentAddress" placeholder="Agent Address" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                    <select id="revokeReason" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2">
+                        <option value="0">Contract Mismatch</option>
+                        <option value="1">Drift Detected</option>
+                        <option value="3">Human Request</option>
+                    </select>
+                    <button onclick="revokeAuthority()" class="w-full py-2 bg-red-600 hover:bg-red-700 rounded-lg">Revoke</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card rounded-xl p-6 mt-8">
+            <h2 class="text-xl font-semibold mb-4">📜 Transaction Log</h2>
+            <div id="txLog" class="space-y-2 max-h-64 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <script>
+        const AUTHORITY_ADDRESS = '0xe7da77beBf85a0b3BEDf46c056e7Fb4f77AC2aD8';
+        const AUTHORITY_ABI = [
+            "function registerAgent(address agent) external",
+            "function grantAuthority(address agent, uint8 level, bytes32 scope, uint256 duration) external returns (bytes32)",
+            "function revokeAuthority(address agent, uint8 reason, bytes32 evidenceRef) external returns (bytes32)",
+            "function checkAuthority(address agent, uint8 requiredLevel) external view returns (bool hasAuthority, uint8 currentLevel)",
+            "function getAuthorityState(address agent) external view returns (tuple(uint8 level, uint8 previousLevel, bytes32 scope, uint256 expiresAt, uint256 lastActivity, bool isActive))",
+            "function agentOwners(address) external view returns (address)"
+        ];
+
+        let provider, signer, contract;
+
+        async function connectWallet() {
+            if (typeof window.ethereum === 'undefined') {
+                alert('Please install MetaMask!');
+                return;
+            }
+            try {
+                provider = new ethers.BrowserProvider(window.ethereum);
+                await provider.send('eth_requestAccounts', []);
+                signer = await provider.getSigner();
+                contract = new ethers.Contract(AUTHORITY_ADDRESS, AUTHORITY_ABI, signer);
+                
+                const address = await signer.getAddress();
+                document.getElementById('statusDot').className = 'w-3 h-3 rounded-full bg-green-500 pulse';
+                document.getElementById('statusText').textContent = `Connected: ${address.slice(0,6)}...${address.slice(-4)}`;
+                document.getElementById('connectBtn').textContent = 'Connected';
+                document.getElementById('connectBtn').disabled = true;
+                log('Connected to wallet: ' + address);
+            } catch (err) {
+                alert('Connection failed: ' + err.message);
+            }
+        }
+
+        async function registerAgent() {
+            if (!contract) return alert('Connect wallet first!');
+            const agent = document.getElementById('agentAddress').value;
+            if (!agent) return alert('Enter agent address!');
+            try {
+                const tx = await contract.registerAgent(agent);
+                log(`Registering agent ${agent}...`);
+                await tx.wait();
+                log(`✅ Agent registered: ${agent}`);
+            } catch (err) {
+                log(`❌ Error: ${err.message}`);
+            }
+        }
+
+        async function grantAuthority() {
+            if (!contract) return alert('Connect wallet first!');
+            const agent = document.getElementById('grantAgentAddress').value;
+            const level = parseInt(document.getElementById('authorityLevel').value);
+            const duration = parseInt(document.getElementById('duration').value);
+            if (!agent) return alert('Enter agent address!');
+            try {
+                const tx = await contract.grantAuthority(agent, level, ethers.ZeroHash, duration);
+                log(`Granting level ${level} to ${agent}...`);
+                await tx.wait();
+                log(`✅ Authority granted!`);
+            } catch (err) {
+                log(`❌ Error: ${err.message}`);
+            }
+        }
+
+        async function checkAuthority() {
+            if (!contract) return alert('Connect wallet first!');
+            const agent = document.getElementById('checkAgentAddress').value;
+            if (!agent) return alert('Enter agent address!');
+            try {
+                const state = await contract.getAuthorityState(agent);
+                const levels = ['REVOKED', 'OBSERVE', 'SUGGEST', 'EXECUTE'];
+                const result = document.getElementById('authorityResult');
+                result.classList.remove('hidden');
+                result.innerHTML = `
+                    <div class="flex justify-between"><span>Level:</span><span class="font-bold">${levels[state.level]}</span></div>
+                    <div class="flex justify-between"><span>Active:</span><span>${state.isActive ? '✅' : '❌'}</span></div>
+                    <div class="flex justify-between"><span>Expires:</span><span>${state.expiresAt > 0 ? new Date(Number(state.expiresAt) * 1000).toLocaleString() : 'Never'}</span></div>
+                `;
+                log(`Checked authority for ${agent}: Level ${levels[state.level]}`);
+            } catch (err) {
+                log(`❌ Error: ${err.message}`);
+            }
+        }
+
+        async function revokeAuthority() {
+            if (!contract) return alert('Connect wallet first!');
+            const agent = document.getElementById('revokeAgentAddress').value;
+            const reason = parseInt(document.getElementById('revokeReason').value);
+            if (!agent) return alert('Enter agent address!');
+            try {
+                const tx = await contract.revokeAuthority(agent, reason, ethers.ZeroHash);
+                log(`Revoking authority for ${agent}...`);
+                await tx.wait();
+                log(`✅ Authority revoked!`);
+            } catch (err) {
+                log(`❌ Error: ${err.message}`);
+            }
+        }
+
+        function log(msg) {
+            const logEl = document.getElementById('txLog');
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML = `<div class="text-sm"><span class="text-gray-500">[${time}]</span> ${msg}</div>` + logEl.innerHTML;
+        }
+    </script>
+</body>
+</html>
