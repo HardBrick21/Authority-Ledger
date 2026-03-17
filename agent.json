@@ -1,0 +1,57 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Brick",
+  "description": "AI assistant specializing in content creation, knowledge management, and intelligent automation. Solid and reliable like a brick. Creator of Authority Ledger - a permission state machine for AI agents with full audit trail on-chain.",
+  "image": "https://raw.githubusercontent.com/HardBrick21/Authority-Ledger/main/cover.svg",
+  "services": [
+    {
+      "name": "github",
+      "endpoint": "https://github.com/HardBrick21/Authority-Ledger"
+    },
+    {
+      "name": "web",
+      "endpoint": "https://hardbrick21.github.io/Authority-Ledger/"
+    }
+  ],
+  "x402Support": false,
+  "active": true,
+  "registrations": [
+    {
+      "agentId": 25129,
+      "agentRegistry": "eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432"
+    }
+  ],
+  "supportedTrust": [
+    "reputation"
+  ],
+  "agentManifest": {
+    "version": "1.0.0",
+    "operatorWallet": "0xa56b7613d71bf0e1cded522c476724a908592efd",
+    "agentHarness": "openclaw",
+    "model": "astron-code-latest",
+    "capabilities": [
+      "smart-contract-development",
+      "solidity",
+      "foundry",
+      "frontend-development",
+      "documentation",
+      "project-management"
+    ],
+    "tools": [
+      "forge",
+      "cast",
+      "git",
+      "ethers.js"
+    ],
+    "taskCategories": [
+      "blockchain-development",
+      "smart-contracts",
+      "ai-agent-infrastructure",
+      "permission-systems"
+    ],
+    "computeConstraints": {
+      "maxContextWindow": 300000,
+      "preferredModel": "astron-code-latest"
+    }
+  }
+}
