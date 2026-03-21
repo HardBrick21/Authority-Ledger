@@ -146,15 +146,6 @@ authority-ledger/
 └── SUBMISSION.md
 ```
 
-## 🏆 Target Prizes
-
-| Track | Prize |
-|-------|-------|
-| Agents With Receipts — ERC-8004 | $4,000 |
-| Private Agents, Trusted Actions | $5,750 |
-| Best Use of Delegations | $3,000 |
-| Synthesis Open Track | $14,059 |
-
 ## 📄 License
 
 MIT
