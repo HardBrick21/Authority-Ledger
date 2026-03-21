@@ -118,6 +118,7 @@ contract AuthorityState {
     
     modifier onlyAgentOwner(address agent) {
         require(agentOwners[agent] == msg.sender, "Not agent owner");
+        require(authorities[agent].isActive, "Agent not active");
         _;
     }
     
@@ -129,6 +130,7 @@ contract AuthorityState {
     // ============ Registration ============
     
     function registerAgent(address agent) external {
+        require(agent != address(0), "Invalid address");
         require(agentOwners[agent] == address(0), "Agent already registered");
         agentOwners[agent] = msg.sender;
         
@@ -154,6 +156,7 @@ contract AuthorityState {
         uint256 duration
     ) external onlyAgentOwner(agent) returns (bytes32 transitionId) {
         require(level != AuthorityLevel.REVOKED, "Cannot grant REVOKED");
+        require(scope != bytes32(0) || level == AuthorityLevel.EXECUTE, "Invalid scope");
         
         AuthorityStateInfo storage state = authorities[agent];
         AuthorityLevel previousLevel = state.level;
@@ -274,8 +277,12 @@ contract AuthorityState {
         bytes32 evidenceRef,
         bytes memory reason
     ) internal returns (bytes32 transitionId) {
-        transitionId = keccak256(abi.encodePacked(
-            agent, uint8(eventType), block.timestamp, totalTransitions
+        transitionId = keccak256(abi.encode(
+            agent,
+            uint8(eventType),
+            block.timestamp,
+            totalTransitions,
+            msg.sender
         ));
         
         transitions[transitionId] = Transition({

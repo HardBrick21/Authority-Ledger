@@ -80,6 +80,7 @@ contract EvidenceStore {
     // ============ Constructor ============
     
     constructor(address _authorityState) {
+        require(_authorityState != address(0), "Invalid authority state address");
         authorityState = _authorityState;
     }
     
@@ -93,8 +94,15 @@ contract EvidenceStore {
         bytes32 sourceVersion,
         bytes32 cacheBatch
     ) external returns (bytes32 evidenceId) {
-        evidenceId = keccak256(abi.encodePacked(
-            agent, uint8(eType), dataHash, block.timestamp, totalEvidences
+        require(agent != address(0), "Invalid agent address");
+        
+        evidenceId = keccak256(abi.encode(
+            agent,
+            uint8(eType),
+            dataHash,
+            block.timestamp,
+            totalEvidences,
+            msg.sender
         ));
         
         evidences[evidenceId] = Evidence({
@@ -192,6 +200,7 @@ contract EvidenceStore {
         uint256 minTimeWindow,
         uint256 minSampleCount
     ) external {
+        require(agent != address(0), "Invalid agent address");
         diversityConfigs[agent] = DiversityConfig({
             minUniqueVersions: minUniqueVersions,
             minUniqueBatches: minUniqueBatches,

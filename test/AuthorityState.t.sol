@@ -117,7 +117,8 @@ contract AuthorityStateTest is Test {
     function testCheckAuthority() public {
         vm.startPrank(owner);
         authority.registerAgent(agent);
-        authority.grantAuthority(agent, AuthorityState.AuthorityLevel.SUGGEST, bytes32(0), 0);
+        bytes32 scope = bytes32(uint256(1));
+        authority.grantAuthority(agent, AuthorityState.AuthorityLevel.SUGGEST, scope, 0);
         
         (bool hasAuthority, AuthorityState.AuthorityLevel currentLevel) = authority.checkAuthority(
             agent,
@@ -139,8 +140,9 @@ contract AuthorityStateTest is Test {
         vm.startPrank(owner);
         authority.registerAgent(agent);
         
-        authority.grantAuthority(agent, AuthorityState.AuthorityLevel.SUGGEST, bytes32(0), 0);
-        authority.grantAuthority(agent, AuthorityState.AuthorityLevel.EXECUTE, bytes32(0), 0);
+        bytes32 scope = bytes32(uint256(1));
+        authority.grantAuthority(agent, AuthorityState.AuthorityLevel.SUGGEST, scope, 0);
+        authority.grantAuthority(agent, AuthorityState.AuthorityLevel.EXECUTE, scope, 0);
         
         bytes32[] memory history = authority.getAgentHistory(agent);
         assertEq(history.length, 2);
