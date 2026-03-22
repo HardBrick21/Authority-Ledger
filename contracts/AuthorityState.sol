@@ -267,6 +267,10 @@ contract AuthorityState {
         return authorities[agent];
     }
     
+    function getAgentOwner(address agent) external view returns (address) {
+        return agentOwners[agent];
+    }
+    
     // ============ Internal Functions ============
     
     function _createTransition(
@@ -308,5 +312,67 @@ contract AuthorityState {
             return AuthorityLevel.OBSERVE;
         }
         return currentLevel;
+    }
+    
+    // ============ Agent Owner Management ============
+    
+    function updateAgentOwner(address agent, address newOwner) external {
+        require(agent != address(0), "Invalid agent address");
+        require(agentOwners[agent] == msg.sender, "Not agent owner");
+        require(newOwner != address(0), "Invalid new owner address");
+        agentOwners[agent] = newOwner;
+    }
+    
+    // ============ Authority Extension ============
+    
+    function extendAuthority(
+        address agent,
+        uint256 additionalDuration
+    ) external onlyAgentOwner(agent) {
+        AuthorityStateInfo storage state = authorities[agent];
+        require(state.isActive, "Agent not active");
+        require(state.expiresAt > 0, "Authority does not expire");
+        
+        state.expiresAt = state.expiresAt + additionalDuration;
+        state.lastActivity = block.timestamp;
+    }
+    
+    // ============ Bulk Operations ============
+    
+    function revokeAllAuthorities(address agent) external onlyAgentOwner(agent) {
+        AuthorityStateInfo storage state = authorities[agent];
+        require(state.isActive, "Agent not active");
+        
+        state.previousLevel = state.level;
+        state.level = AuthorityLevel.REVOKED;
+        state.scope = bytes32(0);
+        state.expiresAt = 0;
+        state.lastActivity = block.timestamp;
+        state.isActive = false;
+        
+        bytes32 transitionId = _createTransition(
+            agent, 
+            state.previousLevel, 
+            AuthorityLevel.REVOKED, 
+            EventType.REVOKE, 
+            bytes32(0), 
+            abi.encode(RevokeReason.HUMAN_REQUEST)
+        );
+        
+        emit AuthorityRevoked(transitionId, agent, state.previousLevel, RevokeReason.HUMAN_REQUEST, bytes32(0));
+    }
+    
+    // ============ View Functions ============
+    
+    function isAuthorityExpiring(address agent, uint256 warningThreshold) 
+        external view returns (bool isExpiring, uint256 timeRemaining) 
+    {
+        AuthorityStateInfo storage state = authorities[agent];
+        if (!state.isActive || state.expiresAt == 0) {
+            return (false, 0);
+        }
+        
+        timeRemaining = state.expiresAt - block.timestamp;
+        isExpiring = timeRemaining <= warningThreshold;
     }
 }
