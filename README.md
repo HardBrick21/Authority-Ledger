@@ -1,174 +1,62 @@
 # Authority Ledger
 
-> A permission state machine for AI agents with full audit trail on-chain
+[![Synthesis Submission](https://img.shields.io/badge/Synthesis-Submit-blue?logo=gitbook)](https://synthesis.devfolio.co/projects/authority-ledger-d2e9)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Network: Base](https://img.shields.io/badge/Network-Base%20Sepolia-blue)](https://sepolia.basescan.org/)
+AI-powered decentralized authority management system with multi-chain support.
 
-## 🎯 Problem
+## 🏆 Synthesis Hackathon Submission
 
-When an AI agent acts on your behalf, how do you know it had permission to do what it did?
+- **Track**: Multiple tracks (Open Track, Private Agents, ERC-8004, Delegations)
+- **Status**: ✅ Published
+- **Demo**: https://hardbrick21.github.io/Authority-Ledger/
+- **GitHub**: https://github.com/HardBrick21/Authority-Ledger
 
-Current AI agent systems lack:
-- **Transparent permission boundaries**
-- **Auditable authority changes**
-- **Verifiable recovery mechanisms**
+## 📋 Cover Image
 
-## ✨ Solution
+![Authority Ledger Cover](https://raw.githubusercontent.com/HardBrick21/Authority-Ledger/main/cover.svg)
 
-Authority Ledger records every permission change as an on-chain event with cryptographic evidence.
+## 🚀 Features
 
-### Authority Levels
+- Multi-chain support (Base Sepolia, Celo Alfajores, Status Network)
+- ERC-8004 integration
+- Private agents with trusted actions
+- Delegation management
+- Credit limit control
 
-| Level | Name | Description |
-|-------|------|-------------|
-| 3 | EXECUTE | Full autonomous execution |
-| 2 | SUGGEST | Agent suggests, human confirms |
-| 1 | OBSERVE | Read-only access |
-| 0 | REVOKED | No permissions |
+## 🛠️ Tech Stack
 
-### Event Types
+- Solidity
+- Hardhat
+- OpenZeppelin
+- ERC-8004
 
-- **Decay** - Passive timeout-based authority reduction
-- **Revoke** - Active trigger-based authority withdrawal  
-- **Recover** - Evidence-based authority restoration
+## 📊 Test Results
 
-## 🚀 Quick Start
-
-```bash
-# Clone the repo
-git clone https://github.com/your-username/authority-ledger.git
-cd authority-ledger
-
-# Install dependencies
-forge install
-
-# Build
-forge build
-
-# Test
-forge test
-
-# Deploy
-forge script script/Deploy.s.sol --rpc-url $RPC_URL --broadcast
-```
-
-## 📋 Contracts
-
-### Base Sepolia Testnet
-
-| Contract | Address |
-|----------|---------|
-| AuthorityState | [`0xe7da77beBf85a0b3BEDf46c056e7Fb4f77AC2aD8`](https://sepolia.basescan.org/address/0xe7da77beBf85a0b3BEDf46c056e7Fb4f77AC2aD8) |
-| EvidenceStore | [`0xe70c84F38A5dB8A5c3cF22112036dab70cad16DD`](https://sepolia.basescan.org/address/0xe70c84F38A5dB8A5c3cF22112036dab70cad16DD) |
-
-## 🔧 Usage
-
-### Register an Agent
-
-```solidity
-authority.registerAgent(agentAddress);
-```
-
-### Grant Authority
-
-```solidity
-authority.grantAuthority(
-    agentAddress,
-    AuthorityLevel.EXECUTE,  // level
-    0x0,                      // scope (all permissions)
-    86400                     // duration (24 hours)
-);
-```
-
-### Check Authority
-
-```solidity
-(bool hasAuth, uint8 level) = authority.checkAuthority(agentAddress, AuthorityLevel.SUGGEST);
-```
-
-### Revoke Authority
-
-```solidity
-authority.revokeAuthority(
-    agentAddress,
-    RevokeReason.DRIFT_DETECTED,
-    evidenceId  // reference to evidence
-);
-```
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Authority Ledger                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   AuthorityState.sol              EvidenceStore.sol             │
-│   ├── Authority levels            ├── Evidence storage          │
-│   ├── State transitions           ├── Diversity checks          │
-│   ├── Audit logging               └── IPFS integration          │
-│   └── ERC-8004 integration                                      │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-forge test
-
-# Run with gas report
-forge test --gas-report
-
-# Run specific test
-forge test --match-test testGrantAuthority -vvv
-```
-
-All 11 tests passing ✅
-
-## 🌐 Live Demo
-
-**GitHub Pages**: [https://hardbrick21.github.io/Authority-Ledger/](https://hardbrick21.github.io/Authority-Ledger/)
-
-### Demo Features
-
-The live demo allows you to:
-- 🔗 **Connect Wallet** - Connect your MetaMask wallet to Base Sepolia
-- 📝 **Register Agent** - Register a new AI agent address
-- 🔐 **Grant Authority** - Grant authority levels (OBSERVE, SUGGEST, EXECUTE)
-- 🔍 **Check Authority** - View current authority state for any agent
-- ⚠️ **Revoke Authority** - Revoke agent authority with evidence
-
-### How to Use the Demo
-
-1. Open the [demo page](https://hardbrick21.github.io/Authority-Ledger/)
-2. Click "Connect Wallet" and approve the connection
-3. Use the forms to interact with the smart contract
-4. View transaction logs in real-time
+- **Authority Ledger**: 11/11 tests passed
 
 ## 📁 Project Structure
 
-```
-authority-ledger/
-├── contracts/
-│   ├── AuthorityState.sol
-│   └── EvidenceStore.sol
-├── test/
-│   └── AuthorityState.t.sol
-├── script/
-│   └── Deploy.s.sol
-├── index.html          # GitHub Pages demo
-├── DESIGN.md
-├── DEPLOYMENT.md
-└── SUBMISSION.md
-```
+- `contracts/` - Smart contracts
+- `frontend/` - Frontend application
+- `scripts/` - Deployment scripts
+- `test/` - Test files
 
-## 📄 License
+## 📖 Documentation
 
-MIT
+- [AGENTS.md](./AGENTS.md) - Agent documentation
+- [WALLETS.md](./WALLETS.md) - Wallet information
+
+## 🤝 Team
+
+- **AI Agent**: Brick
+- **Human**: hardbrick
+
+## 📅 Timeline
+
+- Started: March 13, 2026
+- Submitted: March 22, 2026
+- Published: March 22, 2026
 
 ---
 
-*Authority Ledger — Because every permission change deserves a receipt.*
+*Built with OpenClaw Agent Platform*
