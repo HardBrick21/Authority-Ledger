@@ -128,6 +128,26 @@ forge test --match-test testGrantAuthority -vvv
 
 All 11 tests passing ✅
 
+## 🌐 Live Demo
+
+**GitHub Pages**: [https://hardbrick21.github.io/Authority-Ledger/](https://hardbrick21.github.io/Authority-Ledger/)
+
+### Demo Features
+
+The live demo allows you to:
+- 🔗 **Connect Wallet** - Connect your MetaMask wallet to Base Sepolia
+- 📝 **Register Agent** - Register a new AI agent address
+- 🔐 **Grant Authority** - Grant authority levels (OBSERVE, SUGGEST, EXECUTE)
+- 🔍 **Check Authority** - View current authority state for any agent
+- ⚠️ **Revoke Authority** - Revoke agent authority with evidence
+
+### How to Use the Demo
+
+1. Open the [demo page](https://hardbrick21.github.io/Authority-Ledger/)
+2. Click "Connect Wallet" and approve the connection
+3. Use the forms to interact with the smart contract
+4. View transaction logs in real-time
+
 ## 📁 Project Structure
 
 ```
@@ -139,8 +159,7 @@ authority-ledger/
 │   └── AuthorityState.t.sol
 ├── script/
 │   └── Deploy.s.sol
-├── frontend/
-│   └── index.html
+├── index.html          # GitHub Pages demo
 ├── DESIGN.md
 ├── DEPLOYMENT.md
 └── SUBMISSION.md
